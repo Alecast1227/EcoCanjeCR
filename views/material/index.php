@@ -12,7 +12,12 @@
 
 <table border="1">
     <tr>
-        <th>ID</th><th>Tipo</th><th>Peso</th><th>Fecha</th><th>Puntos</th><th>Acciones</th>
+        <th>ID</th>
+        <th>Tipo</th>
+        <th>Peso</th>
+        <th>Fecha</th>
+        <th>Puntos</th>
+        <th>Acciones</th>
     </tr>
     <?php foreach ($materiales as $m): ?>
         <tr>
