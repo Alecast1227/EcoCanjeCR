@@ -9,6 +9,7 @@
 
 <h2>Lista de materiales reciclados</h2>
 <a href="index.php?controller=MaterialReciclado&action=crear" class="btn">Agregar Nuevo</a>
+<a href="index.php?controller=Usuario&action=index" class="btn">Ver Usuarios</a>
 
 <table border="1">
     <tr>
@@ -19,7 +20,12 @@
         <th>Puntos</th>
         <th>Acciones</th>
     </tr>
-    <?php foreach ($materiales as $m): ?>
+    <?php 
+    if (!isset($materiales) || !is_array($materiales)) {
+        $materiales = [];
+    }
+
+    foreach ($materiales as $m): ?>
         <tr>
             <td><?= $m['ID_Material_Reciclado'] ?></td>
             <td><?= $m['Tipo_Material'] ?></td>
@@ -36,4 +42,3 @@
 
 </body>
 </html>
-
