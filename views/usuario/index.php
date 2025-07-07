@@ -9,7 +9,7 @@
 
 <h2>Lista de Usuarios</h2>
 <a href="index.php?controller=Usuario&action=crear" class="btn">Agregar Nuevo</a>
-<a href="index.php?controller=MaterialReciclado&action=index" class="btn">Volver al Inicio</a>
+
 
 <table border="1">
     <tr>
@@ -45,6 +45,15 @@
         </tr>
     <?php endforeach; ?>
 </table>
-
+<a href="index.php" style="
+    display: inline-block;
+    margin-top: 20px;
+    background-color: #718c49;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-family: 'Roboto', sans-serif;
+">⬅ Volver al inicio</a>
 </body>
 </html>

@@ -8,7 +8,7 @@
 <body>
 
 <h2>Recompensas Disponibles</h2>
-<a href="index.php?controller=MaterialReciclado&action=index" class="btn">Volver a Materiales</a>
+
 
 <table>
     <tr>
@@ -32,6 +32,15 @@
         </tr>
     <?php endforeach; ?>
 </table>
-
+<a href="index.php" style="
+    display: inline-block;
+    margin-top: 20px;
+    background-color: #718c49;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-family: 'Roboto', sans-serif;
+">⬅ Volver al inicio</a>
 </body>
 </html>
