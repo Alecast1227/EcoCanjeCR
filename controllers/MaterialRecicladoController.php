@@ -1,86 +1,63 @@
 <?php
-require_once "models/materialRecicladoModel.php";
+
+require_once 'Config/database.php'; 
+require_once 'models/materialRecicladoModel.php';
 
 class MaterialRecicladoController {
-    private $modelo;
 
-    public function __construct($db = null) {
-        $this->modelo = new MaterialReciclado($db);
+    private $model;
+
+    public function __construct() {
+        $this->model = new MaterialRecicladoModel();
     }
 
     public function index() {
-        $materiales = $this->modelo->obtenerTodos();
-        include "views/material/index.php";
+        $materiales = $this->model->obtenerTodos();
+        require_once 'views/material/index.php';
     }
 
     public function crear() {
-        include "views/material/create.php";
+        require_once 'views/material/create.php';
     }
 
     public function guardar() {
-        $this->modelo->guardar($_POST);
-        header("Location: index.php?controller=MaterialReciclado&action=index");
-    }
-
-    public function editar() {
-        $material = $this->modelo->obtenerPorId($_GET['id']);
-        include "views/material/edit.php";
-    }
-
-    public function actualizar() {
-        $this->modelo->actualizar($_POST['id'], $_POST);
-        header("Location: index.php?controller=MaterialReciclado&action=index");
-    }
-
-    public function eliminar() {
-        $this->modelo->eliminar($_GET['id']);
-        header("Location: index.php?controller=MaterialReciclado&action=index");
-    }
-}
-
-/*
-<?php
-require_once "models/materialRecicladoModel.php";
-
-class MaterialRecicladoController {
-    private $modelo;
-
-    public function __construct($db) {
-        $this->modelo = new MaterialReciclado($db);
-    }
-
-    public function index() {
-        $materiales = $this->modelo->obtenerTodos();
-        include "views/material/index.php";
-    }
-
-    public function crear() {
-        include "views/material/create.php";
-    }
-
-    public function guardar() {
-        $datos = $_POST;
-        $this->modelo->guardar($datos);
-        header("Location: index.php?controller=MaterialReciclado&action=index");
+        $data = [
+            'Tipo_Material' => $_POST['tipo'],
+            'Peso' => $_POST['peso'],
+            'Fecha_Reciclaje' => $_POST['fecha'],
+            'Puntos_Asignados' => $_POST['puntos'],
+            'ID_Usuario' => $_POST['usuario'],
+            'ID_Centro_Acopio' => $_POST['centro'],
+            'ID_Estado' => $_POST['estado']
+        ];
+        $this->model->insertar($data);
+        header('Location: index.php?controller=MaterialReciclado&action=index');
     }
 
     public function editar() {
         $id = $_GET['id'];
-        $material = $this->modelo->obtenerPorId($id);
-        include "views/material/edit.php";
+        $material = $this->model->obtenerPorId($id);
+        require_once 'views/material/edit.php';
     }
 
     public function actualizar() {
-        $id = $_POST['id'];
-        $datos = $_POST;
-        $this->modelo->actualizar($id, $datos);
-        header("Location: index.php?controller=MaterialReciclado&action=index");
+        $data = [
+            'ID_Material_Reciclado' => $_POST['id'],
+            'Tipo_Material' => $_POST['tipo'],
+            'Peso' => $_POST['peso'],
+            'Fecha_Reciclaje' => $_POST['fecha'],
+            'Puntos_Asignados' => $_POST['puntos'],
+            'ID_Usuario' => $_POST['usuario'],
+            'ID_Centro_Acopio' => $_POST['centro'],
+            'ID_Estado' => $_POST['estado']
+        ];
+        $this->model->actualizar($data);
+        header('Location: index.php?controller=MaterialReciclado&action=index');
     }
 
     public function eliminar() {
         $id = $_GET['id'];
-        $this->modelo->eliminar($id);
-        header("Location: index.php?controller=MaterialReciclado&action=index");
+        $this->model->eliminar($id);
+        header('Location: index.php?controller=MaterialReciclado&action=index');
     }
 }
-*/

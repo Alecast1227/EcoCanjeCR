@@ -1,6 +1,18 @@
 <?php
-$conexion = new mysqli("localhost", "root", "", "EcoCanjeCR");
-if ($conexion->connect_error) {
-    die("Conexión fallida: " . $conexion->connect_error);
+class Database {
+    public static function conectar() {
+        $servidor = "localhost"; 
+        $usuario = "root";      
+        $clave = "Alecast1227";  
+        $base = "RECICLA_CR";
+        $puerto = 3306;          
+
+        $conexion = new mysqli($servidor, $usuario, $clave, $base, $puerto);
+        
+        if ($conexion->connect_error) {
+            die("Error de conexión: " . $conexion->connect_error);
+        }
+        return $conexion;
+    }
 }
-return $conexion;
+
