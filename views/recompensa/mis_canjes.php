@@ -1,56 +1,54 @@
-<!-- Bootstrap 5 -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-<?php if(session_status()===PHP_SESSION_NONE){ session_start(); } ?>
-<div class="container my-4">
-  <h2 class="fw-bold text-success mb-3">Mis canjes</h2>
-
-  <div class="d-flex gap-2 mb-3">
-    <a href="index.php?controller=Recompensa&action=index" class="btn btn-outline-success">Volver a recompensas</a>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Mis canjes</title>
+<link rel="stylesheet" href="public/css/estilo.css">
+<style>
+  .contenido{max-width:1000px;margin:24px auto;padding:8px}
+  .btn{padding:8px 12px;border:0;border-radius:8px;background:#4a7c2c;color:#fff;text-decoration:none}
+  table{width:100%;border-collapse:collapse}
+  th,td{border-bottom:1px solid #eee;padding:8px}
+  .top{display:flex;gap:8px;align-items:center;margin-bottom:12px}
+</style>
+</head>
+<body>
+<div class="contenido">
+  <div class="top">
+    <a class="btn" style="background:#777" href="index.php?controller=Menu&action=home">← Menú</a>
+    <a class="btn" href="index.php?controller=Recompensa&action=index">Recompensas</a>
   </div>
 
-  <?php if (!empty($_SESSION['flash_ok'])): ?>
-    <div class="alert alert-success"><?php echo $_SESSION['flash_ok']; unset($_SESSION['flash_ok']); ?></div>
-  <?php endif; ?>
-  <?php if (!empty($_SESSION['flash_error'])): ?>
-    <div class="alert alert-danger"><?php echo $_SESSION['flash_error']; unset($_SESSION['flash_error']); ?></div>
-  <?php endif; ?>
-
-  <div class="card shadow-sm">
-    <div class="table-responsive">
-      <table class="table table-striped table-hover align-middle mb-0">
-        <thead class="table-success">
-          <tr>
-            <th>#</th>
-            <th>Fecha</th>
-            <th>Recompensa</th>
-            <th>Cantidad</th>
-            <th>Puntos usados</th>
-            <th>Acción</th>
-          </tr>
-        </thead>
-        <tbody>
-          <?php if ($canjes && $canjes->num_rows): ?>
-            <?php while($row = $canjes->fetch_assoc()): ?>
-              <tr>
-                <td><?php echo (int)$row['ID_Canje']; ?></td>
-                <td><?php echo htmlspecialchars($row['Fecha_Canje']); ?></td>
-                <td><?php echo htmlspecialchars($row['Recompensa']); ?></td>
-                <td><?php echo (int)$row['Cantidad']; ?></td>
-                <td><?php echo (int)$row['Puntos_Usados']; ?></td>
-                <td>
-                  <a class="btn btn-sm btn-success" href="index.php?controller=Recompensa&action=detalle&id=<?php echo $row['ID_Canje']; ?>">Ver</a>
-                </td>
-              </tr>
-            <?php endwhile; ?>
-          <?php else: ?>
-            <tr>
-              <td colspan="6" class="text-center text-muted py-4">Aún no has realizado canjes.</td>
-            </tr>
-          <?php endif; ?>
-        </tbody>
-      </table>
-    </div>
-  </div>
+  <h2>Mis canjes</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Fecha</th>
+        <th>Recompensa</th>
+        <th>Cantidad</th>
+        <th>Puntos (u)</th>
+        <th>Total puntos</th>
+        <th>Estado</th>
+      </tr>
+    </thead>
+    <tbody>
+      <?php if (!empty($canjes)): foreach ($canjes as $c): ?>
+        <?php $total = (int)$c['Puntos_Requeridos'] * (int)$c['Cantidad']; ?>
+        <tr>
+          <td><?= (int)$c['ID_Canje'] ?></td>
+          <td><?= htmlspecialchars($c['Fecha_Canje']) ?></td>
+          <td>#<?= (int)$c['ID_Recompensa'] ?> — <?= htmlspecialchars($c['Nombre']) ?></td>
+          <td><?= (int)$c['Cantidad'] ?></td>
+          <td><?= (int)$c['Puntos_Requeridos'] ?></td>
+          <td><?= $total ?></td>
+          <td><?= ((int)$c['ID_Estado']===1?'Activo':'Inactivo') ?></td>
+        </tr>
+      <?php endforeach; else: ?>
+        <tr><td colspan="7">Sin canjes realizados aún.</td></tr>
+      <?php endif; ?>
+    </tbody>
+  </table>
 </div>
+</body>
+</html>

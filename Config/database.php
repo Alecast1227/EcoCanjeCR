@@ -3,7 +3,7 @@ class Database {
     public static function conectar() {
         $servidor = "localhost"; 
         $usuario = "root";      
-        $clave = "Alecast1227";  
+        $clave = "22652365Che!";  
         $base = "RECICLA_CR";
         $puerto = 3306;          
 
