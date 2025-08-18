@@ -76,17 +76,20 @@
       <span class="btn cta">Abrir</span>
     </a>
 
-    <a class="card link" href="index.php?controller=Recompensa&action=index">
-      <h3>Recompensas</h3>
-      <p>Explora las recompensas disponibles y canjea tus puntos.</p>
-      <span class="btn cta">Abrir</span>
-    </a>
+    <?php if (!$esAdmin): ?>
+  <a class="card link" href="index.php?controller=Recompensa&action=index">
+    <h3>Recompensas</h3>
+    <p>Explora las recompensas disponibles y canjea tus puntos.</p>
+    <span class="btn cta">Abrir</span>
+  </a>
 
-    <a class="card link" href="index.php?controller=Recompensa&action=misCanjes">
-      <h3>Mis canjes</h3>
-      <p>Consulta el historial de canjes realizados.</p>
-      <span class="btn cta">Abrir</span>
-    </a>
+  <a class="card link" href="index.php?controller=Recompensa&action=misCanjes">
+    <h3>Mis canjes</h3>
+    <p>Consulta el historial de canjes realizados.</p>
+    <span class="btn cta">Abrir</span>
+  </a>
+<?php endif; ?>
+
 
     <?php if ($esAdmin): ?>
       <a class="card link" href="index.php?controller=Usuario&action=index">
@@ -94,6 +97,15 @@
         <p>Administra perfiles, roles y estados de las cuentas.</p>
         <span class="btn cta">Abrir</span>
       </a>
+
+      <?php if ($esAdmin): ?>
+  <a class="card link" href="index.php?controller=Recompensa&action=adminIndex">
+    <h3>Gestión de recompensas</h3>
+    <p>Crear, editar y desactivar recompensas del catálogo.</p>
+    <span class="btn cta">Abrir</span>
+  </a>
+<?php endif; ?>
+
     <?php endif; ?>
   </section>
 </main>

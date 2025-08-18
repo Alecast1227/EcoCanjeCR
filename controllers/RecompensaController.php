@@ -32,5 +32,63 @@ class RecompensaController {
     $canjes = $this->model->listarCanjesPorUsuario((int)$_SESSION['user']['ID_Usuario']);
     require 'views/recompensa/mis_canjes.php';
   }
+    // === ADMIN ===
+  public function adminIndex(){
+    requireRoleAdmin();
+    $recompensas = $this->model->listarTodas();
+    require 'views/recompensa/admin_index.php';
+  }
+
+public function create(){
+  requireRoleAdmin();
+  $recompensa = ['Nombre'=>'','Descripcion'=>'','Puntos_Requeridos'=>0,'Cantidad_Disponible'=>0,'ID_Estado'=>1];
+  $estados = $this->model->listarEstados();
+  $isEdit = false;
+  require 'views/recompensa/form.php';
+}
+
+  public function store(){
+    requireRoleAdmin();
+    $nombre = trim($_POST['Nombre'] ?? '');
+    $descripcion = trim($_POST['Descripcion'] ?? '');
+    $puntos = (int)($_POST['Puntos_Requeridos'] ?? 0);
+    $cantidad = (int)($_POST['Cantidad_Disponible'] ?? 0);
+    $estado = (int)($_POST['ID_Estado'] ?? 1);
+    if($nombre===''){ die('Nombre es requerido'); }
+    $this->model->crear($nombre,$descripcion,$puntos,$cantidad,$estado);
+    header('Location: index.php?controller=Recompensa&action=adminIndex&ok=1');
+  }
+
+  public function edit(){
+  requireRoleAdmin();
+  $id = (int)($_GET['id'] ?? 0);
+  $recompensa = $this->model->obtener($id);
+  if(!$recompensa){ die('Recompensa no encontrada'); }
+  $estados = $this->model->listarEstados();
+  $isEdit = true;
+  require 'views/recompensa/form.php';
+}
+
+  public function update(){
+    requireRoleAdmin();
+    $id = (int)($_POST['ID_Recompensa'] ?? 0);
+    $nombre = trim($_POST['Nombre'] ?? '');
+    $descripcion = trim($_POST['Descripcion'] ?? '');
+    $puntos = (int)($_POST['Puntos_Requeridos'] ?? 0);
+    $cantidad = (int)($_POST['Cantidad_Disponible'] ?? 0);
+    $estado = (int)($_POST['ID_Estado'] ?? 1);
+    if(!$id){ die('ID inválido'); }
+    $this->model->actualizar($id,$nombre,$descripcion,$puntos,$cantidad,$estado);
+    header('Location: index.php?controller=Recompensa&action=adminIndex&ok=1');
+  }
+
+  public function delete(){
+    requireRoleAdmin();
+    $id = (int)($_POST['id'] ?? 0);
+    if(!$id){ die('ID inválido'); }
+    $this->model->desactivar($id);
+    header('Location: index.php?controller=Recompensa&action=adminIndex&ok=1');
+  }
+
 }
 

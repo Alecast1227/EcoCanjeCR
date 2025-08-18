@@ -102,4 +102,124 @@ class RecompensaModel {
     $res = $stmt->get_result();
     return $res ? $res->fetch_all(MYSQLI_ASSOC) : [];
   }
+    // Listar todas las recompensas (para admin)
+  public function listarTodas(){
+    $res = $this->db->query(
+      "SELECT ID_Recompensa, Nombre, Descripcion, Cantidad_Disponible, Puntos_Requeridos, ID_Estado
+       FROM RECOMPENSA
+       ORDER BY ID_Estado DESC, Puntos_Requeridos ASC, ID_Recompensa DESC"
+    );
+    return $res ? $res->fetch_all(MYSQLI_ASSOC) : [];
+  }
+
+  // Obtener una recompensa
+  public function obtener($id){
+    $stmt = $this->db->prepare(
+      "SELECT ID_Recompensa, Nombre, Descripcion, Cantidad_Disponible, Puntos_Requeridos, ID_Estado
+       FROM RECOMPENSA WHERE ID_Recompensa=? LIMIT 1"
+    );
+    $stmt->bind_param('i',$id);
+    $stmt->execute();
+    $res = $stmt->get_result();
+    return $res ? $res->fetch_assoc() : null;
+  }
+
+  // Crear recompensa
+  public function crear($nombre,$descripcion,$puntos,$cantidad,$estado=1){
+    $stmt = $this->db->prepare(
+      "INSERT INTO RECOMPENSA (Nombre,Descripcion,Cantidad_Disponible,Puntos_Requeridos,ID_Estado)
+       VALUES (?,?,?,?,?)"
+    );
+    $stmt->bind_param('ssiii',$nombre,$descripcion,$cantidad,$puntos,$estado);
+    if(!$stmt->execute()){ throw new Exception("Error al crear recompensa"); }
+    return $this->db->insert_id;
+  }
+
+  // Actualizar recompensa
+  public function actualizar($id,$nombre,$descripcion,$puntos,$cantidad,$estado){
+    $stmt = $this->db->prepare(
+      "UPDATE RECOMPENSA
+       SET Nombre=?, Descripcion=?, Cantidad_Disponible=?, Puntos_Requeridos=?, ID_Estado=?
+       WHERE ID_Recompensa=?"
+    );
+    $stmt->bind_param('ssiiii',$nombre,$descripcion,$cantidad,$puntos,$estado,$id);
+    if(!$stmt->execute()){ throw new Exception("Error al actualizar recompensa"); }
+    return true;
+  }
+
+  
+
+
+public function desactivar($id){
+  $inactivo = $this->getEstadoId('Inactivo'); 
+  $stmt = $this->db->prepare("UPDATE RECOMPENSA SET ID_Estado=? WHERE ID_Recompensa=?");
+  $stmt->bind_param('ii', $inactivo, $id);
+  if(!$stmt->execute()){ throw new Exception("Error al desactivar recompensa"); }
+  return true;
+}
+// Devuelve estados normalizados con clave 'Nombre' aunque la tabla no tenga esa columna
+public function listarEstados(){
+  $res = $this->db->query("SELECT * FROM estado ORDER BY ID_Estado");
+  $rows = $res ? $res->fetch_all(MYSQLI_ASSOC) : [];
+
+  $prefer = ['Nombre','nombre','Descripcion','descripcion','Estado','estado','Detalle','detalle','Etiqueta','etiqueta','Titulo','titulo'];
+  $out = [];
+
+  foreach ($rows as $r) {
+    $display = null;
+    // 1) intenta nombres comunes
+    foreach ($prefer as $k) {
+      if (array_key_exists($k, $r) && trim((string)$r[$k]) !== '') { $display = $r[$k]; break; }
+    }
+    // 2) si no hay, toma la primera columna que no sea ID_Estado
+    if ($display === null) {
+      foreach ($r as $k=>$v) {
+        if (strcasecmp($k,'ID_Estado') !== 0) { $display = $v; break; }
+      }
+    }
+    // 3) fallback final
+    if ($display === null) { $display = 'Estado '.(string)$r['ID_Estado']; }
+
+    $out[] = [
+      'ID_Estado' => (int)$r['ID_Estado'],
+      'Nombre'    => (string)$display,
+    ];
+  }
+  return $out;
+}
+
+// Busca el ID del estado por texto, probando varias columnas comunes.
+// Si no encuentra coincidencia exacta, intenta por LIKE (case-insensitive).
+private function getEstadoId($buscado){
+  $buscado = trim((string)$buscado);
+  if ($buscado === '') { throw new Exception("Nombre de estado vacío"); }
+
+  $cols = ['Nombre','nombre','Descripcion','descripcion','Estado','estado','Detalle','detalle','Etiqueta','etiqueta','Titulo','titulo'];
+  foreach ($cols as $col) {
+   
+    $check = $this->db->query("SHOW COLUMNS FROM estado LIKE '".$this->db->real_escape_string($col)."'");
+    if ($check && $check->num_rows > 0) {
+      $stmt = $this->db->prepare("SELECT ID_Estado FROM estado WHERE $col = ? LIMIT 1");
+      $stmt->bind_param('s', $buscado);
+      $stmt->execute();
+      $res = $stmt->get_result()->fetch_assoc();
+      if ($res) return (int)$res['ID_Estado'];
+
+      $like = "%".$buscado."%";
+      $stmt = $this->db->prepare("SELECT ID_Estado FROM estado WHERE $col LIKE ? ORDER BY ID_Estado LIMIT 1");
+      $stmt->bind_param('s', $like);
+      $stmt->execute();
+      $res = $stmt->get_result()->fetch_assoc();
+      if ($res) return (int)$res['ID_Estado'];
+    }
+  }
+
+
+  $candidatos = $this->listarEstados();
+  if (!empty($candidatos)) return (int)$candidatos[0]['ID_Estado'];
+
+  throw new Exception("No se pudo determinar el ID del estado para '$buscado'");
+}
+
+
 }
