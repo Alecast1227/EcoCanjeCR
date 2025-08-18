@@ -48,13 +48,7 @@
         <label for="centro">ID Centro de Acopio</label>
         <input id="centro" name="centro" type="number" min="1" required>
       </div>
-      <div class="full">
-        <label for="estado">Estado</label>
-        <select id="estado" name="estado">
-          <option value="1">Activo</option>
-          <option value="2">Inactivo</option>
-        </select>
-      </div>
+      
     </div>
     <div style="display:flex;gap:8px;margin-top:12px;">
       <button class="btn" type="submit">Guardar</button>

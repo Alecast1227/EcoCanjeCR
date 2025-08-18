@@ -29,7 +29,7 @@
         <th>Cantidad</th>
         <th>Puntos (u)</th>
         <th>Total puntos</th>
-        <th>Estado</th>
+        
       </tr>
     </thead>
     <tbody>
@@ -42,7 +42,7 @@
           <td><?= (int)$c['Cantidad'] ?></td>
           <td><?= (int)$c['Puntos_Requeridos'] ?></td>
           <td><?= $total ?></td>
-          <td><?= ((int)$c['ID_Estado']===1?'Activo':'Inactivo') ?></td>
+          
         </tr>
       <?php endforeach; else: ?>
         <tr><td colspan="7">Sin canjes realizados aún.</td></tr>

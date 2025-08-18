@@ -13,13 +13,20 @@
 </style>
 </head>
 <body>
+<?php
+  // DEFINIR $esAdmin ANTES DE USARLO
+  $user = $_SESSION['user'] ?? [];
+  $esAdmin = !empty($user) && (int)$user['ID_Tipo_Usuario'] === 1;
+?>
 <div class="contenido">
   <div class="top">
     <a class="btn" style="background:#777" href="index.php?controller=Menu&action=home">← Menú</a>
-    <a class="btn" href="index.php?controller=MaterialReciclado&action=crear">Ingresar registro</a>
-  
+
+    <?php if (!$esAdmin): ?>
+      <a class="btn" href="index.php?controller=MaterialReciclado&action=crear">Ingresar registro</a>
+    <?php endif; ?>
   </div>
-  <?php $esAdmin = !empty($_SESSION['user']) && (int)$_SESSION['user']['ID_Tipo_Usuario']===1; ?>
+
   <h2>Material Reciclado</h2>
   <table>
     <thead>
@@ -39,7 +46,7 @@
           <td><?= (int)$m['Puntos_Asignados'] ?></td>
           <td><?= htmlspecialchars($m['Usuario_Nombre']) ?></td>
           <td><?= (int)$m['ID_Centro_Acopio'] ?></td>
-          
+
           <?php if ($esAdmin): ?>
           <td style="display:flex;gap:6px;">
             <a class="btn" href="index.php?controller=MaterialReciclado&action=editar&id=<?= (int)$m['ID_Material_Reciclado'] ?>">Editar</a>
@@ -48,12 +55,10 @@
           <?php endif; ?>
         </tr>
       <?php endforeach; else: ?>
-        <tr><td colspan="<?= $esAdmin ? 9 : 8 ?>">Sin registros aún.</td></tr>
+        <tr><td colspan="<?= $esAdmin ? 8 : 7 ?>">Sin registros aún.</td></tr>
       <?php endif; ?>
     </tbody>
   </table>
 </div>
 </body>
-</html>
-
 </html>

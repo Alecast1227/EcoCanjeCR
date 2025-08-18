@@ -5,7 +5,7 @@
 <title>Crear cuenta</title>
 <link rel="stylesheet" href="public/css/estilo.css">
 <style>
-  body{background:#f6f7f9;}
+  body{background:#f2e0c9;}
   .auth-wrap{max-width:520px;margin:60px auto;padding:24px;background:#fff;border:1px solid #e9e9e9;border-radius:14px;box-shadow:0 6px 22px rgba(0,0,0,.06)}
   h1{margin:0 0 12px 0;font-size:22px;color:#222}
   p.muted{color:#666;margin:0 0 14px 0}
